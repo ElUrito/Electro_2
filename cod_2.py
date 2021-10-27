@@ -3,7 +3,7 @@ import soundfile as sf
 from scipy import signal
 import matplotlib.pyplot as plt
 
-                ######## Refencias ########
+"""             ######## Refencias ########
 #cal: senal de calibración senoidal de 1 kHz a 1 Pa (94 dBSPL).
 #ruido: senal de ruido de fondo.
 #rms: valor eficaz de la senal de calibracion.
@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 #Leq: vector que almacena el Leq de cada banda.
 #leq: valor que almacena el valor de una banda.
                 ###########################
+"""
 
 #importo la senal de calibracion y de ruido de fondo
 cal, fs = sf.read('calibración_prueba.wav') #importo senal de calibracion
