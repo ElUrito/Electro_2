@@ -1,29 +1,49 @@
 # Importación de librerías
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
-# Definición de variables
-pasos = 5  # pasos de a 5°, configurable por el "usuario"
-cant_pasos = int(15//pasos+1)  # cantidad de pasos entre 0 y 180°
-array_conteo = np.linspace(0, 180, num=cant_pasos, dtype=int)  # Vector de ángulos
-#impulso = [None] * len(array_conteo)  # Vector vacío
-impulso = []
+
+def matriz_impulsos(orientacion="H"):
+    """
+    Esta función obtiene los distintos impulsos de los archivos .csv y convierte en un vector "tiempo" y una "impulsos"
+    :param orientacion: Para eje horizontal, "H" o "h". Para eje vertical, "V" o "v".
+    Eje horizontal como predeterminado.
+    :return: Devuelve un vector "tiempo" para graficar como eje horizontal y una matriz "impulsos" con los
+    valores a distintas direcciones (con pasos de 5°).
+    """
+
+    # Definición de variables
+    array_conteo = np.linspace(0, 180, num=37, dtype=int)  # Vector de ángulos
+    impulsos = np.array(np.zeros(37), dtype=object)  # Vector vacío para impulsos
+    tiempo = np.array([0])  # Vector vacío para tiempo
+    for i in range(len(array_conteo)):  # Elige eje horizontal o vertical. Por defecto, horizontal
+        if orientacion=="H" or orientacion=="h":
+            archivo = pd.read_csv("Archivos/de620me90_hor_deg{:.0f}.csv".format(array_conteo[i]), header=None)
+        elif orientacion=="V" or orientacion=="v":
+            archivo = pd.read_csv("Archivos/de620me90_ver_deg{:.0f}.csv".format(array_conteo[i]), header=None)
+        else:
+            print('Para eje horizontal, orientacion="H"; para vertical, orientacion="V"')
+            break
+        archivo = archivo.drop([0, 1, 2])  # Elimina las primeras 3 filas que sólo tienen encabezados
+        archivo2 = archivo.to_numpy()
+        archivo2 = archivo2.astype(float)
+        archivo3 = archivo2[:, 1]
+        impulsos[i] = archivo3  # Definición matriz "impulsos"
+        if (i == 0): tiempo = archivo2[:, 0]  # Definición vector "tiempo
+        del (archivo)
+        del (archivo2)
+        del (archivo3)
+    return tiempo, impulsos
+
+tiempo, impulsos = matriz_impulsos()
+
+plt.plot(tiempo, impulsos[0])
+plt.plot(tiempo, impulsos[36])
+plt.xlim([0, 0.1])
+plt.show()
 
 """
-A continuación se debería poder leer todos los archivos .csv, eliminar encabezados,
-y guardar en una hermosa matriz... Todavía no pasa.
+Falta recortar los vectores (idealmente antes de imprimir los valores en la matriz) de acuerdo al ventaneo.
+En otra función hacer rfft y normalizar al valor en 0°
 """
-
-for i in range(len(array_conteo)):
-    archivo = pd.read_csv("Archivos/de620me90_hor_deg{:.0f}.csv".format(array_conteo[i]), header=None)
-    archivo = archivo.drop([0, 1, 2])  # Elimina las primeras 3 filas que sólo tienen encabezados
-    if i == 0:  # Elimina la columna de tiempo en todos los impulsos excepto el primero
-        impulso.append(archivo)
-    else:
-        del (archivo[0])
-        impulso.append(archivo)
-        continue
-print(impulso)
-
-#Esta línea pasa de pandas.core.frame.DataFrame a numpy.ndarray
-pd.DataFrame(impulso[2]).to_numpy()
