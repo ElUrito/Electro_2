@@ -28,22 +28,26 @@ def matriz_impulsos(orientacion="H"):
         archivo = archivo.drop([0, 1, 2])  # Elimina las primeras 3 filas que sólo tienen encabezados
         archivo2 = archivo.to_numpy()
         archivo2 = archivo2.astype(float)
-        archivo3 = archivo2[:, 1]
+        archivo3 = archivo2[294:489, 1]  # Ventaneo eligiendo sólo las muestras que quiero
+        # (desde 6.125 ms a 4.063 ms)
         impulsos[i] = archivo3  # Definición matriz "impulsos"
-        if (i == 0): tiempo = archivo2[:, 0]  # Definición vector "tiempo
+        if (i == 0): tiempo = archivo2[294:489, 0]  # Definición vector tiempo con mismo ventaneo
         del (archivo)
         del (archivo2)
         del (archivo3)
     return tiempo, impulsos
 
+
 tiempo, impulsos = matriz_impulsos()
 
-plt.plot(tiempo, impulsos[0])
-plt.plot(tiempo, impulsos[36])
-plt.xlim([0, 0.1])
-plt.show()
+
+
+# Gráfico
+#plt.plot(tiempo, impulsos[0])
+#plt.plot(tiempo, impulsos[36])
+#plt.xlim([0, 0.1])
+#plt.show()
 
 """
-Falta recortar los vectores (idealmente antes de imprimir los valores en la matriz) de acuerdo al ventaneo.
-En otra función hacer rfft y normalizar al valor en 0°
+En otra función hacer rfft y normalizar al valor en 0°. Hacer función gráfico.
 """

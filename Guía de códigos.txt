@@ -1,0 +1,19 @@
+    CODIGO 1:
+- Importar IRs
+- Ventanearlas
+- Aplicar fft
+- Graficar
+
+    CODIGO 2:
+- Importar señal de calibración
+- Calcular su RMS
+- Importar señal de medición
+- Calibrar con respecto a la señal anterior
+- Aplicar filtro de 1/3 de octava
+- Graficar
+
+    CODIGO 3:
+- Importar señales de calibración y medición
+- Calibrarlas
+- Normalizar la amplitud del espectro a magnitud real
+    * Tener en cuenta el factor de escala que sirve para pasar de espectro continuo a discreto.
