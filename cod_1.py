@@ -42,9 +42,9 @@ def matriz_impulsos(orientacion="H"):
     return tiempo, impulsos
 
 def fft(matriz):
-    mat_fft = np.zeros(len(matriz))
-    for i in range(len(matriz)):
-        mat_fft[i] = np.fft.rfft(matriz[i])
+    mat_fft = np.fft.rfft(matriz)
+    # for i in range(len(matriz)):
+    #     mat_fft[i] = np.fft.rfft(matriz[i])
     matriz_fft = 20*np.log10(mat_fft)
     freq = np.linspace(0, 24000, len(mat_fft))
     return freq, matriz_fft
@@ -52,19 +52,12 @@ def fft(matriz):
 
 tiempo, impulsos = matriz_impulsos()
 
-frec, vector = fft(impulsos)
-print(vector)
+frec, vector = fft(impulsos[0])
+
 
 # Gráfico
-# plt.subplot(221)
-# plt.plot(frec, vector[0])
-# plt.subplot(222)
-# plt.plot(frec, vector[-1])
-# plt.subplot(223)
-# plt.plot(frec, vector[1])
-# plt.subplot(224)
-# plt.plot(frec, vector[-2])
-# plt.show()
+plt.plot(frec, vector)
+plt.show()
 
 """
 NO FUNCIONA FFT

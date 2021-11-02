@@ -1,7 +1,8 @@
     CODIGO 1:
-- Importar IRs
-- Ventanearlas
++ Importar IRs
++ Ventanearlas
 - Aplicar fft
+- Normalizar a 0°
 - Graficar
 
     CODIGO 2:
