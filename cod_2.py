@@ -59,7 +59,7 @@ Wn = [fmin, fmax]
 SPL = []  # vector que acumula el nivel SPL de cada banda
 
 plt.figure(figsize=(6, 4))
-for i in range(0, len(K)):
+for i in range(0,len(K)):
     sos = signal.butter(6,(Wn[0][i],Wn[1][i]),btype='bandpass',output='sos') #se obtiene un vector con los coeficientes a_i y b_i de H(z)  
     a,b = signal.butter(6,(Wn[0][i],Wn[1][i]),btype='bandpass',analog=True,output='ba') # se obtienen a y b de H(z) = A(z)/B(z)
     w, h = signal.freqs(a,b) #se obtiene la respuesta en frecuencia a partir de los coeficientes a y b 
@@ -79,8 +79,8 @@ for i in range(0, len(K)):
 plt.xticks(fcentral, xlabels, rotation=70, fontsize=10)
 plt.xlim(500,16000)
 plt.ylim(-10, 0.5)
-plt.xlabel(r'$Frecuencia\ (Hz)$', fontsize=15)
-plt.ylabel(r'$Magnitud\ (dB)$', fontsize=15)
+plt.xlabel('$Frecuencia\ (Hz)$', fontsize=15)
+plt.ylabel('$Magnitud\ (dB)$', fontsize=15)
 plt.tick_params(axis='y', labelsize=10)
 plt.grid()
 plt.savefig('rta_filtros.png',)    
@@ -91,8 +91,8 @@ plt.figure(figsize=(6, 4))
 plt.tick_params(axis='y', labelsize=10)
 plt.bar(range(len(Fm)),SPL)
 plt.xticks(bandas,xlabels,rotation=70,fontsize=10)
-plt.ylabel(r'$L_{Eq} \ (dBSPL)$', fontsize=15)
-plt.xlabel(r'$Frecuencia \ (Hz)$', fontsize=15)
+plt.ylabel('$L_{eq}$ (dBSPL)', fontsize=15)
+plt.xlabel('Frecuencia (Hz)', fontsize=15)
 plt.savefig('ruido_tercios.png')
 plt.grid()
 plt.show()
