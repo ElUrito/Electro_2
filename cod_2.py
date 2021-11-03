@@ -29,7 +29,7 @@ import soundfile as sf
 from scipy import signal
 import matplotlib.pyplot as plt
 
-cal, fs = sf.read('Archivos/med_calibración.wav')  # importo senal de calibracion y su frecuencia de muestreo
+cal, fs = sf.read('Archivos/med_calibracion.wav')  # importo senal de calibracion y su frecuencia de muestreo
 ruido, fs2 = sf.read('Archivos/med_ruido.wav')  # importo ruido de fondo y su frecuencia de muestreo
 
 rms = np.sqrt(sum(cal**2)/len(cal))   # calculo valor RMS de señal calibracion
@@ -57,7 +57,7 @@ for i in range(len(K)):
 Wn = [fmin, fmax]
 SPL = []  # vector que acumula el nivel SPL de cada banda
 
-plt.figure(figsize=(6, 4))
+# plt.figure(figsize=(6, 4))
 for i in range(0, len(K)):
     sos = signal.butter(6, (Wn[0][i], Wn[1][i]), btype='bandpass', output='sos')  # se obtiene un vector
     # con los coeficientes a_i y b_i de H(z)
@@ -74,17 +74,17 @@ for i in range(0, len(K)):
 fcentral = [500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000,
               10000, 12500, 16000]
     
-xlabels = ['500', '630','800', '1000', '1250', '1600', '2000', '2500', '3150', '4000', '5000', '6300', '8000',
+xlabels = ['500', '630', '800', '1000', '1250', '1600', '2000', '2500', '3150', '4000', '5000', '6300', '8000',
               '10000', '12500', '16000']
 
 plt.xticks(fcentral, xlabels, rotation=70, fontsize=10)
-plt.xlim(500, 16000)
+plt.xlim(500, 20000)
 plt.ylim(-10, 0.5)
 plt.xlabel(r'$Frecuencia\ (Hz)$', fontsize=15)
 plt.ylabel(r'$Magnitud\ (dB)$', fontsize=15)
 plt.tick_params(axis='y', labelsize=20)
 plt.grid()
-plt.savefig('rta_filtros.png',)    
+plt.savefig('rta_filtros.png')
 
 bandas = np.arange(0, len(N), 1)
 
