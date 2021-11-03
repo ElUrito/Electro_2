@@ -1,9 +1,9 @@
     CODIGO 1:
 + Importar IRs
 + Ventanearlas
-- Aplicar fft
-- Normalizar a 0°
-- Graficar
++ Aplicar fft
++ Normalizar a 0°
++ Graficar
 
     CODIGO 2:
 - Importar señal de calibración                 (Listo)
