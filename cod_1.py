@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 # Funciones
 
-def __graficos__(frecuencias, imp_fft, graficar='', guardar_img='', eje='horizontal'):
+def graficos(frecuencias, imp_fft, graficar='', guardar_img='', eje='horizontal'):
     # Gráficos
     plt.figure()
     angulos = np.linspace(-180, 180, 73, dtype=int)
@@ -84,7 +84,7 @@ def matriz_impulsos(orientacion="H", graficar='', guardar_img=''):
     imp_fft[36] = imp_fft[36]-imp_fft[36]  # Normalizo a valores de 0°
 
     if __name__ == '__main__':
-        __graficos__(frecuencias, imp_fft, graficar, guardar_img, eje)
+        graficos(frecuencias, imp_fft, graficar, guardar_img, eje)
 
     return tiempo, impulsos, frecuencias, imp_fft
 
@@ -109,5 +109,6 @@ vec_tiempo, mat_impulsos, vec_frecuencias, mat_imp_fft = matriz_impulsos()
 
 matriz_impulsos(orientacion='v', graficar='si')
 # matriz_impulsos(orientacion='v', guardar_img='si')
+
 
 
