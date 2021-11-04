@@ -24,73 +24,86 @@ import soundfile as sf
 from scipy import signal
 import matplotlib.pyplot as plt
 
-
-cal, fs = sf.read('Archivos/med_calibracion.wav')  # importo senal de calibracion y su frecuencia de muestreo
-ruido, fs2 = sf.read('Archivos/med_ruido.wav')  # importo ruido de fondo y su frecuencia de muestreo
-
-rms = np.sqrt(sum(cal**2)/len(cal))   # calculo valor RMS de señal calibracion
-ruido = ruido/rms  # paso de tensión equivalente a pascales
-
-b = 1/3 
-N = np.arange(27, 43, 1)  # numero de banda (ver tabla 1, pag 5 de ANSI)
-K = N - 30 
-fr = 1000  # la frecuencia de referencia es de 1 kHz para audio
-
-fmax = []  # vector que acumula las frecuencias superirores de cada banda
-fmin = []  # vector que acumula las frecuencias inferiores de cada banda
-Fm = []    # vector que acumula el nivel SPL de cada banda
+# Función
 
 
-for i in range(len(K)):
-    fm = fr*(2**(K[i]*b))  # genera las frecuencias centrales normalizadas
-    Fm.append(fm)
-    f1 = (fm*(2**(-b/2)))/(0.5*fs)  # genera las frecuencias inferiores (f1 en ANSI)
-    fmin.append(f1)
-    f2 = (fm*(2**(b/2)))/(0.5*fs)  # genera las frecuencias inferiores (f2 en ANSI)
-    fmax.append(f2)
+def ruido_fondo():
+    """
+    Esta función obtiene los archivos de audio en .wav de calibración y ruido de fondo medidos in situ,
+    calibra la señal de ruido, aplica filtro de tercio de banda y analiza la energía en cada banda.
+    Por último guarda y grafica el resultado y el filtro utilizado.
+    """
 
-   
-Wn = [fmin, fmax]
-SPL = []  # vector que acumula el nivel SPL de cada banda
+    # Obtención de archivos de audio y calibración
+    cal, fs = sf.read('Archivos/med_calibracion.wav')  # importo senal de calibracion
+    ruido, fs2 = sf.read('Archivos/med_ruido.wav')  # importo ruido de fondo
+    rms = np.sqrt(sum(cal**2)/len(cal))   # calculo valor RMS de señal calibracion
+    ruido = ruido/rms  # paso de tensión equivalente a pascales
 
-plt.figure(figsize=(6, 4))
-for i in range(0, len(K)):
-    sos = signal.butter(6, (Wn[0][i], Wn[1][i]), btype='bandpass', output='sos')  # se obtiene un vector
-    # con los coeficientes a_i y b_i de H(z)
-    a, b = signal.butter(6, (Wn[0][i], Wn[1][i]), btype='bandpass', analog=True, output='ba') # se obtienen
-    # a y b de H(z) = A(z)/B(z)
-    w, h = signal.freqs(a, b)  # se obtiene la respuesta en frecuencia a partir de los coeficientes a y b
-    plt.semilogx(w*fs/2, 20*np.log10(abs(h)), linewidth=3)  # se plotean la magnitud de los filtros por banda
-    ruido_fil = signal.sosfilt(sos, ruido)  # se filtra el ruido de fondo
-    
-    rms_banda = np.sqrt(sum(ruido_fil**2)/len(ruido_fil))  # se obtiene el valor rms del ruido filtrado en esta banda
-    spl = 20*np.log10(rms_banda/20e-6)  # se pasa a dB SPL el valor en eV
-    SPL.append(spl)  # se acumula en el vector SPL
+    # Filtrado por tercio de octava
+    b = 1/3
+    N = np.arange(27, 43, 1)  # numero de banda (ver tabla 1, pag 5 de ANSI)
+    bandas = np.arange(0, len(N), 1)
+    K = N - 30
+    fr = 1000  # la frecuencia de referencia es de 1 kHz para audio
 
-    fcentral = [500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000,
-              10000, 12500, 16000]
-    
-    xlabels = ['500', '630', '800', '1000', '1250', '1600', '2000', '2500', '3150', '4000', '5000', '6300', '8000',
-              '10000', '12500', '16000']
+    fmax = []  # vector que acumula las frecuencias superirores de cada banda
+    fmin = []  # vector que acumula las frecuencias inferiores de cada banda
+    Fm = []    # vector que acumula el nivel SPL de cada banda
+
+    for i in range(len(K)):
+        fm = fr*(2**(K[i]*b))  # genera las frecuencias centrales normalizadas
+        Fm.append(fm)
+        f1 = (fm*(2**(-b/2)))/(0.5*fs)  # genera las frecuencias inferiores (f1 en ANSI)
+        fmin.append(f1)
+        f2 = (fm*(2**(b/2)))/(0.5*fs)  # genera las frecuencias inferiores (f2 en ANSI)
+        fmax.append(f2)
+
+    Wn = [fmin, fmax]
+    SPL = []  # vector que acumula el nivel SPL de cada banda
+
+    # Gráfico
+    plt.figure()
+    for i in range(0, len(K)):
+        sos = signal.butter(6, (Wn[0][i], Wn[1][i]), btype='bandpass', output='sos')  # se obtiene un vector
+        # con los coeficientes a_i y b_i de H(z)
+        a, b = signal.butter(6, (Wn[0][i], Wn[1][i]), btype='bandpass', analog=True, output='ba') # se obtienen
+        # a y b de H(z) = A(z)/B(z)
+        w, h = signal.freqs(a, b)  # se obtiene la respuesta en frecuencia a partir de los coeficientes a y b
+        plt.semilogx(w*fs/2, 20*np.log10(abs(h)), linewidth=3)  # se plotean la magnitud de los filtros por banda
+        ruido_fil = signal.sosfilt(sos, ruido)  # se filtra el ruido de fondo
+
+        rms_banda = np.sqrt(sum(ruido_fil**2)/len(ruido_fil))  # se obtiene el valor rms del ruido filtrado en esta banda
+        spl = 20*np.log10(rms_banda/20e-6)  # se pasa a dB SPL el valor en eV
+        SPL.append(spl)  # se acumula en el vector SPL
+
+        fcentral = [500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000,
+                  10000, 12500, 16000]
+
+        xlabels = ['500', '630', '800', '1000', '1250', '1600', '2000', '2500', '3150', '4000', '5000', '6300', '8000',
+                  '10000', '12500', '16000']
+
+    plt.xticks(fcentral, xlabels, rotation=45)
+    plt.xlim(430, 18500)
+    plt.ylim(-8, 1)
+    plt.xlabel('Frecuencia [Hz]', fontsize=13)
+    plt.ylabel('Magnitud [dB]', fontsize=13)
+    plt.tick_params(axis='y', labelsize=10)
+    plt.grid()
+    plt.tight_layout()
+    plt.savefig('Respuesta del filtro.png')
+
+    plt.figure()
+    plt.tick_params(axis='y', labelsize=10)
+    plt.bar(range(len(Fm)), SPL)
+    plt.xticks(bandas, xlabels, rotation=45)
+    plt.ylabel('$L_{eq}$ [dB SPL]', fontsize=13)
+    plt.xlabel('Frecuencia [Hz]', fontsize=13)
+    plt.grid()
+    plt.tight_layout()
+    plt.savefig('Ruido filtrado.png')
+    plt.show()
 
 
-plt.xticks(fcentral, xlabels, rotation=70, fontsize=10)
-plt.xlim(500, 16000)
-plt.ylim(-10, 0.5)
-plt.xlabel('Frecuencia (Hz)', fontsize=15)
-plt.ylabel('Magnitud (dB)', fontsize=15)
-plt.tick_params(axis='y', labelsize=10)
-plt.grid()
-plt.savefig('rta_filtros.png')
-
-bandas = np.arange(0, len(N), 1)
-
-plt.figure(figsize=(6, 4))
-plt.tick_params(axis='y', labelsize=10)
-plt.bar(range(len(Fm)), SPL)
-plt.xticks(bandas, xlabels, rotation=70, fontsize=10)
-plt.ylabel('$L_{eq}$ (dBSPL)', fontsize=15)
-plt.xlabel('Frecuencia (Hz)', fontsize=15)
-plt.savefig('ruido_tercios.png')
-plt.grid()
-plt.show()
+# Ejecución de función
+ruido_fondo()

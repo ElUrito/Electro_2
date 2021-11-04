@@ -7,7 +7,6 @@ from cod_1 import matriz_impulsos
 
 # Función
 
-
 def mag_real(senal, orientacion='h', graficar='', guardar_img=''):
     eje = 'horizontal'
     if orientacion == 'v' or orientacion == 'V':
@@ -29,7 +28,29 @@ def mag_real(senal, orientacion='h', graficar='', guardar_img=''):
 
     f = np.linspace(0, fs / 2, len(senal_spl[0]))
 
-    # Gráfico
+    # Gráfico polar
+    # grados = np.linspace(0, 180, 37, dtype=int)
+    # fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+    # theta = np.pi * np.hstack((-1 * np.flip(grados), grados)) / 180
+    # freqs = [1000, 2000, 4000, 8000, 12000, 16000]
+    # labels = ['1 kHz', '2 kHz', '4 kHz', '8 kHz', '12 kHz', '16 kHz']
+    #
+    # for i, f in enumerate(freqs):
+    #     x = np.hstack([np.flip(senal_spl[i, f]), senal_spl[i, f]])
+    #     ax.plot(theta, x, label=labels[i])
+    #
+    # ax.set_rlim((-55, 0))
+    # ax.set_rticks(np.arange(-50, 0, 10))
+    # ax.set_rlabel_position(0)
+    # ax.tick_params(axis='x', which='both', labelsize=10)
+    # ax.legend(bbox_to_anchor=(1.05, 1), loc='best')
+    # ax.set_title(f'Patrón polar {eje}', fontsize=13,
+    #              pad=15)
+    # plt.tight_layout()
+    # if guardar_img == 'si' or guardar_img == 'SI' or guardar_img == 'Si':
+    #     plt.savefig(f'polar_{eje}.png')
+
+    # Gráfico contorno
     labels = ['0°', '15°', '30°', '45°']
     plt.figure(figsize=[8.5, 6.5])
     for i in range(4):
@@ -50,5 +71,20 @@ def mag_real(senal, orientacion='h', graficar='', guardar_img=''):
 
 
 # Ejecución de función
+"""
+Para ejecutar esta función se debe primeramente llamar a la función "matriz_impulso()" del cod_1.py, donde
+se cargan los impulsos, se da formato y se extrae en forma de matriz, siendo el segundo valor que retorna
+dicha función. Luego se ingresa dicha matriz a la función de este script (mag_real()), que se encarga de
+calibrarla y graficarla con magnitud real en dB SPL.
+
+Para ejecutar el código y ver el gráfico, hacerlo de la siguiente manera, habiendo conseguido la matriz primero:
+mag_real(senal, graficar='si')
+
+Para guardar dicha imagen, se debe hacer de la siguiente manera:
+mag_real(senal, guardar_img='si')
+
+Se puede graficar y guardar la imagen en simultáneo de la siguiente manera:
+mag_real(senal, graficar='si', guardar_img='si')
+"""
 _, senal, _, _ = matriz_impulsos()
 mag_real(senal, graficar='si')

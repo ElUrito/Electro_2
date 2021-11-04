@@ -110,3 +110,4 @@ vec_tiempo, mat_impulsos, vec_frecuencias, mat_imp_fft = matriz_impulsos()
 matriz_impulsos(orientacion='v', graficar='si')
 # matriz_impulsos(orientacion='v', guardar_img='si')
 
+
