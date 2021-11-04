@@ -6,6 +6,30 @@ import matplotlib.pyplot as plt
 
 # Funciones
 
+def __graficos__(frecuencias, imp_fft, graficar='', guardar_img='', eje='horizontal'):
+    # Gráficos
+    plt.figure()
+    angulos = np.linspace(-180, 180, 73, dtype=int)
+    levels = [-33, -30, -27, -24, -21, -18, -15, -12, -9, -6, -3, 0, 3, 6]
+    plt.contour(frecuencias, angulos, imp_fft, levels=[-6])
+    plt.contourf(frecuencias, angulos, imp_fft, levels, cmap='jet')
+    plt.gca().set_xscale('log')
+    ticksx = [500, 1000, 2000, 5000, 10000, 20000]
+    ticksy = [-180, -150, -120, -90, -60, -30, 0, 30, 60, 90, 120, 150, 180]
+    plt.xticks(ticksx, ticksx)
+    plt.xlim(250, 20000)
+    plt.yticks(ticksy, ticksy)
+    cbar = plt.colorbar(drawedges='True')
+    cbar.set_label('Nivel relativo [dB]', fontsize=12)
+    plt.title(f'Gráfico de contorno {eje} DE620', fontsize=13)
+    plt.xlabel('Frecuencia [Hz]', fontsize=12)
+    plt.ylabel('Ángulo [°]', fontsize=12)
+    plt.grid()
+    if guardar_img == "si" or guardar_img == "Si" or guardar_img == "SI":
+        plt.savefig(f'Contorno eje {eje} DE620-8 con ME90.png')
+    if graficar == "si" or graficar == "Si" or graficar == "SI":
+        plt.show()
+
 
 def matriz_impulsos(orientacion="H", graficar='', guardar_img=''):
     """
@@ -59,36 +83,30 @@ def matriz_impulsos(orientacion="H", graficar='', guardar_img=''):
     tiempo = tiempo*1000  # Para pasar a milisegundos
     imp_fft[36] = imp_fft[36]-imp_fft[36]  # Normalizo a valores de 0°
 
-    plt.figure()
-    angulos = np.linspace(-180, 180, 73, dtype=int)
-    levels = [-33, -30, -27, -24, -21, -18, -15, -12, -9, -6, -3, 0, 3, 6]
-    plt.contour(frecuencias, angulos, imp_fft, levels=[-6])
-    plt.contourf(frecuencias, angulos, imp_fft, levels, cmap='jet')
-    plt.gca().set_xscale('log')
-    ticksx = [500, 1000, 2000, 5000, 10000, 20000]
-    ticksy = [-180, -150, -120, -90, -60, -30, 0, 30, 60, 90, 120, 150, 180]
-    plt.xticks(ticksx, ticksx)
-    plt.xlim(250, 20000)
-    plt.yticks(ticksy, ticksy)
-    cbar = plt.colorbar(drawedges='True')
-    cbar.set_label('Nivel relativo [dB]', fontsize=12)
-    plt.title(f'Gráfico de contorno {eje} DE620', fontsize=13)
-    plt.xlabel('Frecuencia [Hz]', fontsize=12)
-    plt.ylabel('Ángulo [°]', fontsize=12)
-    # plt.grid()
-    if guardar_img == "si" or guardar_img == "Si" or guardar_img == "SI":
-        plt.savefig(f'Contorno eje {eje} DE620-8 con ME90.png')
-    if graficar == "si" or graficar == "Si" or graficar == "SI":
-        plt.show()
+    if __name__ == '__main__':
+        __graficos__(frecuencias, imp_fft, graficar, guardar_img, eje)
 
     return tiempo, impulsos, frecuencias, imp_fft
 
 
-
-
-
 # Ejecución de función
-matriz_impulsos(guardar_img='si')
-matriz_impulsos(orientacion='v', guardar_img='si')
+"""
+Para ejecutar la función se puede hacer sencillamente llamando a la función sin ningún parámetro agregado.
+Por defecto lee las mediciones del eje horizontal, no grafica ni guarda imagen. Para elegir el eje vertical, 
+llamar a la función de la siguiente manera:
+matriz_impulsos(orientacion='v')
 
+Para graficar, hacerlo de la siguiente manera:
+matrtiz_impulsos(graficar='si')
+
+Para guardar imagen en la carpeta donde se está ejecutando el script, hacerlo de la siguiente manera:
+matriz_impulsos(guardar_img='si')
+
+También se pueden obtener los vectores temporal y frecuencial, así como también la matriz de impulsos
+e impulsos transformados por Fourier de la siguiente manera:
+vec_tiempo, mat_impulsos, vec_frecuencias, mat_imp_fft = matriz_impulsos()
+"""
+
+matriz_impulsos(orientacion='v', graficar='si')
+# matriz_impulsos(orientacion='v', guardar_img='si')
 
