@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 # Funciones
 
-def graficos(frecuencias, imp_fft, graficar='', guardar_img='', eje='horizontal'):
+def graficos(frecuencias, imp_fft, graficar='Si', guardar_img='', eje='horizontal'):
     # Gráficos
     plt.figure()
     angulos = np.linspace(-180, 180, 73, dtype=int)
@@ -31,7 +31,7 @@ def graficos(frecuencias, imp_fft, graficar='', guardar_img='', eje='horizontal'
         plt.show()
 
 
-def matriz_impulsos(orientacion="H", graficar='', guardar_img=''):
+def matriz_impulsos(orientacion="H", graficar='Si', guardar_img=''):
     """
     Esta función obtiene los distintos impulsos de los archivos .csv, previamente exportados desde el ARTA
     y los convierte en un vector "tiempo" y una matriz "impulsos" compuesta por vectores que son los valores
@@ -88,6 +88,46 @@ def matriz_impulsos(orientacion="H", graficar='', guardar_img=''):
 
     return tiempo, impulsos, frecuencias, imp_fft
 
+def graf_polar(frecuencias, senal, orientacion='h', graficar='', guardar_img=''):
+    eje = 'horizontal'
+    if orientacion == 'v' or orientacion == 'V':
+        eje = 'vertical'
+
+    # Gráfico polar
+    grados = np.linspace(0, 180, 37, dtype=int)
+    fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+    theta = np.zeros([73])
+    theta = np.pi * np.hstack((-1 * np.flip(grados), grados)) / 180
+    theta = np.delete(theta, 37)
+
+    freqs = [1000, 2000, 4000, 8000, 16000]
+    labels = ['1 kHz', '2 kHz', '4 kHz', '8 kHz', '16 kHz']
+
+    mat_polar = np.zeros([5, 73])
+    mat_polar[0] = senal[:, 23]
+    mat_polar[1] = senal[:, 43]
+    mat_polar[2] = senal[:, 86]
+    mat_polar[3] = senal[:, 171]
+    mat_polar[4] = senal[:, 342]
+    ax.plot(theta, mat_polar[0], label=labels[0])
+    ax.plot(theta, mat_polar[1], label=labels[1])
+    ax.plot(theta, mat_polar[2], label=labels[2])
+    ax.plot(theta, mat_polar[3], label=labels[3])
+    ax.plot(theta, mat_polar[4], label=labels[4])
+
+    ax.set_rlim((-55, 0))
+    ax.set_rticks(np.arange(-50, 0, 10))
+    ax.set_rlabel_position(0)
+    ax.tick_params(axis='x', which='both', labelsize=10)
+    ax.legend(bbox_to_anchor=(1.05, 1), loc='best')
+    ax.set_title(f'Patrón polar {eje}', fontsize=13, pad=15)
+    plt.tight_layout()
+    if guardar_img == 'si' or guardar_img == 'SI' or guardar_img == 'Si':
+        plt.savefig(f'polar_{eje}.png')
+    if graficar == 'si' or graficar == 'SI' or graficar == 'Si':
+        plt.show()
+
+
 
 # Ejecución de función
 """
@@ -105,10 +145,14 @@ matriz_impulsos(guardar_img='si')
 También se pueden obtener los vectores temporal y frecuencial, así como también la matriz de impulsos
 e impulsos transformados por Fourier de la siguiente manera:
 vec_tiempo, mat_impulsos, vec_frecuencias, mat_imp_fft = matriz_impulsos()
+
+El funcionamiento de graf_polar es análogo.
 """
 
 matriz_impulsos(orientacion='v', graficar='si')
 # matriz_impulsos(orientacion='v', guardar_img='si')
 
+# graf_polar(f2, senal_fft2, guardar_img='si', orientacion='v')
+# graf_polar(f, senal_fft, graficar='si', guardar_img='si')
 
 
