@@ -6,8 +6,17 @@ import matplotlib.pyplot as plt
 
 # Funciones
 
+
 def graficos(frecuencias, imp_fft, graficar='Si', guardar_img='', eje='horizontal'):
-    # Gráficos
+    """
+    Esta función genera un gráfico de contorno
+    :param frecuencias: vector de frecuencias obtenidos en la función matriz_impulsos
+    :param imp_fft: matriz de impulsos con la FFT aplicada, obtenidos en la función matriz_impulsos
+    :param graficar: parámetro que genera la instrucción de graficar
+    :param guardar_img: parámetro que genera la instrucción de guardar la imagen generada
+    :param eje: parámetro que sirve para nomenclar la imagen generada
+    """
+
     plt.figure()
     angulos = np.linspace(-180, 180, 73, dtype=int)
     levels = [-33, -30, -27, -24, -21, -18, -15, -12, -9, -6, -3, 0, 3, 6]
@@ -88,7 +97,15 @@ def matriz_impulsos(orientacion="H", graficar='Si', guardar_img=''):
 
     return tiempo, impulsos, frecuencias, imp_fft
 
-def graf_polar(frecuencias, senal, orientacion='h', graficar='', guardar_img=''):
+
+def graf_polar(imp_fft, orientacion='h', graficar='', guardar_img=''):
+    """
+    Función que genera gráfico polar de direccionalidad de la bocina medida
+    :param imp_fft: matriz de impulsos con la FFT aplicada, obtenidos en la función matriz_impulsos
+    :param orientacion: parámetro que sirve para definir el eje graficado
+    :param graficar: parámetro que genera la instrucción de graficar
+    :param guardar_img: parámetro que genera la instrucción de guardar la imagen generada
+    """
     eje = 'horizontal'
     if orientacion == 'v' or orientacion == 'V':
         eje = 'vertical'
@@ -100,15 +117,14 @@ def graf_polar(frecuencias, senal, orientacion='h', graficar='', guardar_img='')
     theta = np.pi * np.hstack((-1 * np.flip(grados), grados)) / 180
     theta = np.delete(theta, 37)
 
-    freqs = [1000, 2000, 4000, 8000, 16000]
     labels = ['1 kHz', '2 kHz', '4 kHz', '8 kHz', '16 kHz']
 
     mat_polar = np.zeros([5, 73])
-    mat_polar[0] = senal[:, 23]
-    mat_polar[1] = senal[:, 43]
-    mat_polar[2] = senal[:, 86]
-    mat_polar[3] = senal[:, 171]
-    mat_polar[4] = senal[:, 342]
+    mat_polar[0] = imp_fft[:, 23]
+    mat_polar[1] = imp_fft[:, 43]
+    mat_polar[2] = imp_fft[:, 86]
+    mat_polar[3] = imp_fft[:, 171]
+    mat_polar[4] = imp_fft[:, 342]
     ax.plot(theta, mat_polar[0], label=labels[0])
     ax.plot(theta, mat_polar[1], label=labels[1])
     ax.plot(theta, mat_polar[2], label=labels[2])
@@ -128,7 +144,6 @@ def graf_polar(frecuencias, senal, orientacion='h', graficar='', guardar_img='')
         plt.show()
 
 
-
 # Ejecución de función
 """
 Para ejecutar la función se puede hacer sencillamente llamando a la función sin ningún parámetro agregado.
@@ -146,13 +161,14 @@ También se pueden obtener los vectores temporal y frecuencial, así como tambi�
 e impulsos transformados por Fourier de la siguiente manera:
 vec_tiempo, mat_impulsos, vec_frecuencias, mat_imp_fft = matriz_impulsos()
 
-El funcionamiento de graf_polar es análogo.
+
+El usuario no debería poder llamar la función "graficos", pero sí a la "graf_polar". Primero debe
+obtener la matriz de vectores transformados por la FFT, que es el cuarto valor que devuelve la función
+"matriz_impulsos".
 """
 
-matriz_impulsos(orientacion='v', graficar='si')
-# matriz_impulsos(orientacion='v', guardar_img='si')
+_, _, _, senal_fft = matriz_impulsos(orientacion='h')
+# matriz_impulsos(orientacion='v', guardar_img='si', graficar='si')
 
 # graf_polar(f2, senal_fft2, guardar_img='si', orientacion='v')
-# graf_polar(f, senal_fft, graficar='si', guardar_img='si')
-
-
+# graf_polar(senal_fft, graficar='si')

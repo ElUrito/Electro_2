@@ -49,8 +49,6 @@ def mag_real(senal, orientacion='h', graficar='', guardar_img=''):
         plt.show()
 
 
-
-
 # Ejecución de función
 """
 Para ejecutar esta función se debe primeramente llamar a la función "matriz_impulso()" del cod_1.py, donde
@@ -67,9 +65,8 @@ mag_real(senal, guardar_img='si')
 Se puede graficar y guardar la imagen en simultáneo de la siguiente manera:
 mag_real(senal, graficar='si', guardar_img='si')
 """
+
 _, senal, f, senal_fft = matriz_impulsos()
 mag_real(senal, graficar='si')
 
-
 # _, senal2, f2, senal_fft2 = matriz_impulsos(orientacion='v')
-
